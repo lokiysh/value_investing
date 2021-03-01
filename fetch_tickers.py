@@ -3,6 +3,29 @@ from utils import *
 from constants import *
 
 def fetch_ticker_data(ticker):
+    """
+    Fetches all the required data for the given ticker from multiple sources (yahoo finances, and morningstar.com)
+    Returned data structure has the following fields:
+    {
+        total_liabilities,
+        total_shareholders_equity,
+        expected_growth_rate_future_in_percentage_5_years,
+        conservative_growth_rate,
+        earnings_per_share_ttm,
+        trailing_annual_dividend_rate,
+        shares_outstanding,
+        current_price,
+        historical_price_earnings_ratio_5_years,
+        roe_average_5_years,
+        cash_and_cash_equivalents,
+        free_cash_flow_ttm
+    }
+
+    It calls various private methods below to fulfill this information.
+    Companies which are less than 5 years old have the historical_price_earnings_ratio_5_years as 0 and roe_average_5_years computed since its epoch.
+
+    Finally it also validates the values to get rid of nans for the above cases.
+    """
     ticker_data = {}
     _get_return_of_equity_historic_average(ticker, ticker_data)
     _get_balance_sheet_info(ticker, ticker_data)
