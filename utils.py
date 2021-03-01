@@ -26,7 +26,10 @@ def convert_abbreviated_strings_to_numbers(string):
     Converts abbreivated string amounts to numbers, such as 1.2M = 1200000 and 14K = 14000
     """
     abbreviations = {'K': 3, 'M': 6, 'B': 9, 'T': 12}
-    return float(string[:-1]) * (10 ** abbreviations[string[-1]])
+    try:
+        return convert_to_number(string[:-1]) * (10 ** abbreviations[string[-1]])
+    except:
+        return 0
 
 def scrape_url_to_soup(url):
     """
@@ -63,3 +66,12 @@ def validate_values(data):
     for key in data.keys():
         if math.isnan(data[key]):
             data[key] = 0
+
+def convert_to_number(data):
+    """
+    Converts a data to a number, if possible, otherwise returns 0
+    """
+    try:
+        return float(data)
+    except:
+        return 0

@@ -43,7 +43,7 @@ def _get_balance_sheet_info(ticker, ticker_data):
     try:
         balance_sheet_info = get_balance_sheet(ticker)
         balance_sheet_info = balance_sheet_info[balance_sheet_info.columns[0]]
-        ticker_data['total_shareholders_equity'] = float(balance_sheet_info['totalStockholderEquity'])
+        ticker_data['total_shareholders_equity'] = convert_to_number(balance_sheet_info['totalStockholderEquity'])
     except:
         print ("Cannot read balance sheet info for %s"%(ticker))
 
@@ -51,7 +51,7 @@ def _get_growth_rate(ticker, ticker_data):
     try:
         analysts_info = get_analysts_info(ticker)
         growth_rate_next_5_years_string = analysts_info['Growth Estimates'][ticker][4]
-        ticker_data['expected_growth_rate_future_in_percentage_5_years'] = float(growth_rate_next_5_years_string[:-1])
+        ticker_data['expected_growth_rate_future_in_percentage_5_years'] = convert_to_number(growth_rate_next_5_years_string[:-1])
         ticker_data['conservative_growth_rate'] = apply_margin_of_safety(ticker_data['expected_growth_rate_future_in_percentage_5_years'], SAFETY_MARGIN_PERCENTAGE)
     except:
         print ("Cannot read analysts info for %s"%(ticker))
@@ -60,9 +60,9 @@ def _get_stats(ticker, ticker_data):
     try:
         stats_info = get_stats(ticker)
         stats_info = dict(zip(stats_info['Attribute'], stats_info['Value']))
-        ticker_data['earnings_per_share_ttm'] = float(stats_info['Diluted EPS (ttm)'])
+        ticker_data['earnings_per_share_ttm'] = convert_to_number(stats_info['Diluted EPS (ttm)'])
         ticker_data['total_debt'] = convert_abbreviated_strings_to_numbers(stats_info['Total Debt (mrq)'])
-        ticker_data['trailing_annual_dividend_rate'] = float(stats_info['Trailing Annual Dividend Rate 3'])
+        ticker_data['trailing_annual_dividend_rate'] = convert_to_number(stats_info['Trailing Annual Dividend Rate 3'])
         ticker_data['shares_outstanding'] = convert_abbreviated_strings_to_numbers(stats_info['Shares Outstanding 5'])
     except:
         print ("Cannot read stats info for %s"%(ticker))
@@ -70,7 +70,7 @@ def _get_stats(ticker, ticker_data):
 def _get_live_price(ticker, ticker_data):
     try:
         live_price = get_live_price(ticker)
-        ticker_data['current_price'] = float(live_price)
+        ticker_data['current_price'] = convert_to_number(live_price)
     except:
         print ("Cannot read live price for %s"%(ticker))
 
@@ -83,7 +83,7 @@ def _get_historical_price_earning_ratio(ticker, ticker_data):
         #If we do not have 5 year average data for P/E for this ticker, fall back to the most recent data
         if historic_price_earning_ratio == '—':
             historic_price_earning_ratio = price_earnings_tag.parent.find_all('td')[0].text
-        ticker_data['historical_price_earnings_ratio_5_years'] = float(historic_price_earning_ratio) if historic_price_earning_ratio  != '—' else 0
+        ticker_data['historical_price_earnings_ratio_5_years'] = convert_to_number(historic_price_earning_ratio) if historic_price_earning_ratio  != '—' else 0
     except:
         print ("Cannot read historic_price_earning_ratio for ticker %s"%(ticker))
 
@@ -93,7 +93,7 @@ def _get_free_cash_flow(ticker, ticker_data):
         soup = scrape_url_to_soup(url)
         free_cash_flow_tag = soup.find(lambda tag:tag.name == 'th' and 'Free Cash Flow' in tag.text)
         free_cash_flow_text = free_cash_flow_tag.parent.find_all('td')[10].text.replace(",", "")
-        ticker_data['free_cash_flow_ttm'] = float(free_cash_flow_text) * (10**6)
+        ticker_data['free_cash_flow_ttm'] = convert_to_number(free_cash_flow_text) * (10**6)
     except:
         print ("Cannot read free_cash_flow_ttm for ticker %s"%(ticker))
 
@@ -103,7 +103,7 @@ def _get_cash_and_cash_equivalents(ticker, ticker_data):
         soup = scrape_url_to_jsonsoup(url)
         cash_and_cash_equivalent_tag = soup.find(id = 'data_i1')
         current_year_cash = cash_and_cash_equivalent_tag.find(id = 'Y_5')
-        ticker_data['cash_and_cash_equivalents'] = float(current_year_cash['rawvalue'])
+        ticker_data['cash_and_cash_equivalents'] = convert_to_number(current_year_cash['rawvalue'])
     except:
         print ("Cannot read cash and cash equivalent for ticker %s"%(ticker))
 
@@ -116,7 +116,7 @@ def _get_return_of_equity_historic_average(ticker, ticker_data):
         roe_last_5_years = []
         for i in range(len(roe_historic) - 6, len(roe_historic) - 1):
             if roe_historic[i].text != '—':
-                roe_last_5_years.append(float(roe_historic[i].text))
+                roe_last_5_years.append(convert_to_number(roe_historic[i].text))
         ticker_data['roe_average_5_years'] = statistics.median(roe_last_5_years)
     except:
         print ("Cannot read ROE for ticker %s"%(ticker))
