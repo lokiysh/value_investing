@@ -25,7 +25,7 @@ def get_valuations(ticker_data):
             ticker_data['conservative_growth_rate'],
             5),
         'discounted_cash_flow_valuation': discounted_cash_flow(ticker_data['cash_and_cash_equivalents'],
-            ticker_data['total_liabilities'],
+            ticker_data['total_debt'],
             ticker_data['free_cash_flow_ttm'],
             ticker_data['shares_outstanding'],
             ticker_data['conservative_growth_rate'],

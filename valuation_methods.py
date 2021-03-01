@@ -22,12 +22,12 @@ def price_earnings(earnings_per_share_ttm, historical_price_earnings_ratio, expe
     #Finally, we scale back the future price to the present day value, taking the historic market discount rate.
     return net_present_value(future_predicted_price, HISTORIC_MARKET_DISCOUNT_RATE, num_years_forecast)
 
-def discounted_cash_flow(cash_and_cash_equivalents, total_liabilities, free_cash_flow, shares_outstanding, expected_growth_rate_per_annum_in_percentage, num_years_forecast):
+def discounted_cash_flow(cash_and_cash_equivalents, total_debt, free_cash_flow, shares_outstanding, expected_growth_rate_per_annum_in_percentage, num_years_forecast):
     """
     Calculates the valuation of the company using the discounted cash flow model.
     INPUT:
         cash_and_cash_equivalents: Amount of cash or its equivalents the company is holding right now.
-        total_liabilities: The total amount of liability company has at its last announced earnings.
+        total_debt: The total amount of debt company has at its last announced earnings.
         free_cash_flow: free cash flow is amount of operational money company has minus the amount of capital expenditure required to run everyday business
         shares_outstanding: Number of shares outstanding. The final company's value will be spread to all its shareholders.
         expected_growth_rate_per_annum_in_percentage per annum of the company. Of course this is an estimate, so its better to provide a conservative
@@ -48,8 +48,8 @@ def discounted_cash_flow(cash_and_cash_equivalents, total_liabilities, free_cash
         expected_growth_rate_per_annum_in_percentage = apply_margin_of_safety(expected_growth_rate_per_annum_in_percentage, GROWTH_DECLINE_PERCENTAGE)
     #Take the last fcf values npv, and multiply by a constant. This constant represents the company is being sold.
     fcf_value_year_10 = npv_fcf * FCF_MULTIPLIER_YEAR_10
-    #Calculate the net company value taking all the npvs of cash, current cash and cash equivalents, and the price of selling. Minus the liabilities
-    company_value = total_npv_fcf + fcf_value_year_10 + cash_and_cash_equivalents - total_liabilities
+    #Calculate the net company value taking all the npvs of cash, current cash and cash equivalents, and the price of selling. Minus the total_debt
+    company_value = total_npv_fcf + fcf_value_year_10 + cash_and_cash_equivalents - total_debt
     # Calculate the per share value from the total company value
     per_share_value = company_value / shares_outstanding
     return per_share_value

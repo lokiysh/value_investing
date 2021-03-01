@@ -8,7 +8,7 @@ def fetch_ticker_data(ticker):
     Fetches all the required data for the given ticker from multiple sources (yahoo finances, and morningstar.com)
     Returned data structure has the following fields:
     {
-        total_liabilities,
+        total_debt,
         total_shareholders_equity,
         expected_growth_rate_future_in_percentage_5_years,
         conservative_growth_rate,
@@ -43,7 +43,6 @@ def _get_balance_sheet_info(ticker, ticker_data):
     try:
         balance_sheet_info = get_balance_sheet(ticker)
         balance_sheet_info = balance_sheet_info[balance_sheet_info.columns[0]]
-        ticker_data['total_liabilities'] = float(balance_sheet_info['totalLiab'])
         ticker_data['total_shareholders_equity'] = float(balance_sheet_info['totalStockholderEquity'])
     except:
         print ("Cannot read balance sheet info for %s"%(ticker))
@@ -62,6 +61,7 @@ def _get_stats(ticker, ticker_data):
         stats_info = get_stats(ticker)
         stats_info = dict(zip(stats_info['Attribute'], stats_info['Value']))
         ticker_data['earnings_per_share_ttm'] = float(stats_info['Diluted EPS (ttm)'])
+        ticker_data['total_debt'] = convert_abbreviated_strings_to_numbers(stats_info['Total Debt (mrq)'])
         ticker_data['trailing_annual_dividend_rate'] = float(stats_info['Trailing Annual Dividend Rate 3'])
         ticker_data['shares_outstanding'] = convert_abbreviated_strings_to_numbers(stats_info['Shares Outstanding 5'])
     except:
