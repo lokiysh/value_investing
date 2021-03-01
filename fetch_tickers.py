@@ -80,6 +80,9 @@ def _get_historical_price_earning_ratio(ticker, ticker_data):
         soup = scrape_url_to_soup(url)
         price_earnings_tag = soup.find(lambda tag:tag.name == 'th' and 'Price/Earnings' in tag.text)
         historic_price_earning_ratio = price_earnings_tag.parent.find_all('td')[3].text
+        #If we do not have 5 year average data for P/E for this ticker, fall back to the most recent data
+        if historic_price_earning_ratio == '—':
+            historic_price_earning_ratio = price_earnings_tag.parent.find_all('td')[0].text
         ticker_data['historical_price_earnings_ratio_5_years'] = float(historic_price_earning_ratio) if historic_price_earning_ratio  != '—' else 0
     except:
         print ("Cannot read historic_price_earning_ratio for ticker %s"%(ticker))
