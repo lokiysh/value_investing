@@ -1,6 +1,7 @@
 from yahoo_fin.stock_info import *
 from utils import *
 from constants import *
+import statistics
 
 def fetch_ticker_data(ticker):
     """
@@ -113,6 +114,6 @@ def _get_return_of_equity_historic_average(ticker, ticker_data):
         for i in range(len(roe_historic) - 6, len(roe_historic) - 1):
             if roe_historic[i].text != '—':
                 roe_last_5_years.append(float(roe_historic[i].text))
-        ticker_data['roe_average_5_years'] = sum(roe_last_5_years) / len(roe_last_5_years)
+        ticker_data['roe_average_5_years'] = statistics.median(roe_last_5_years)
     except:
         print ("Cannot read ROE for ticker %s"%(ticker))
