@@ -59,7 +59,9 @@ if __name__ == '__main__':
     namespace, extra_params = args.parse_known_args()
 
     #If there is --ticker argument, use that, otherwise read the entire list of tickers in tickers.py
-    my_tickers = [namespace.ticker] or tickers.my_tickers
+    my_tickers = tickers.my_tickers
+    if (namespace.ticker):
+        my_tickers = [namespace.ticker]
 
     results = []
     for ticker in my_tickers:

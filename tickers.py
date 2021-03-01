@@ -2,5 +2,5 @@
 my_tickers = [
     'AAPL',
     'INTC',
-    'QCOM'
+    'QCOM',
 ]
