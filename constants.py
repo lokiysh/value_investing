@@ -11,3 +11,6 @@ CURRENT_PRICE = "Current Price"
 P_E_VALUATION = "P/E Valuation"
 DCF_VALUATION = "DCF Valuation"
 ROE_VALUATION = "ROE Valuation"
+EX_DIVIDEND_DATE = 'EX Dividend date'
+DAYS_TO_DIVIDEND = 'Days to Dividend'
+EXPECTED_DIVIDEND = 'Expected Dividend'
